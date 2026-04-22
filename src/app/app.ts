@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ViewerComponent } from './viewer/viewer.component';
+import { AudioComponent } from './audio/audio.component';
 
 @Component({
   selector: 'dss-root',
-  imports: [RouterOutlet, ViewerComponent],
+  imports: [RouterOutlet, ViewerComponent, AudioComponent],
   template: `
     <div class="app-container">
       <p>Dancing Shoes Simulator</p>
+      <dss-audio/>
       <dss-viewer/>
     </div>
     <router-outlet/>
