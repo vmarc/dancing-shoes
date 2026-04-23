@@ -32,6 +32,7 @@
     "ng-zorro-antd": "^21.2.2",
     "rxjs": "~7.8.0",
     "three": "^0.184.0",
+    "three-addons": "^1.2.0",
     "tslib": "^2.3.0",
     "wavesurfer.js": "^7.12.6"
   },
