@@ -4,10 +4,20 @@ import { viewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import { ViewerService } from './viewer.service';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'dss-viewer',
   template: `
+    <div class="buttons">
+      <button nz-button (click)="up()">
+        up
+      </button>
+      <button nz-button (click)="down()">
+        down
+      </button>
+    </div>
+
     <canvas #3dCanvas height="400" width="600"></canvas>
   `,
   styles: `
@@ -15,7 +25,14 @@ import { ViewerService } from './viewer.service';
       display: block;
       border: 1px solid black;
     }
+
+    .buttons {
+      margin-bottom: 1rem;
+    }
   `,
+  imports: [
+    NzButtonComponent
+  ],
   providers: [ViewerService]
 })
 export class ViewerComponent implements AfterViewInit {
@@ -29,5 +46,13 @@ export class ViewerComponent implements AfterViewInit {
     } else {
       console.error('3D canvas not found');
     }
+  }
+
+  up(): void {
+    this.service.up();
+  }
+
+  down(): void {
+    this.service.down();
   }
 }

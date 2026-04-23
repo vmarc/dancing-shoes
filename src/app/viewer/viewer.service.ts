@@ -1,8 +1,6 @@
 import { PerspectiveCamera } from 'three';
 import { Scene } from 'three';
 import { WebGLRenderer } from 'three';
-import { BoxGeometry } from 'three';
-import { MeshNormalMaterial } from 'three';
 import { Mesh } from 'three';
 import { AmbientLight } from 'three';
 import { AxesHelper } from 'three';
@@ -14,15 +12,30 @@ import { DirectionalLight } from 'three';
 import { GLTFLoader } from 'three/addons';
 import { GLTF } from 'three/addons';
 import { Injectable } from '@angular/core';
+import { Engine } from './engine';
 
 @Injectable()
 export class ViewerService {
+
+  private engine: Engine | undefined = undefined;
 
   init(canvas: HTMLCanvasElement): void {
     this.loadShoe((gltf) => {
         this.initView(canvas, gltf.scene);
       }
     );
+  }
+
+  up(): void {
+    if (this.engine) {
+      this.engine.up();
+    }
+  }
+
+  down(): void {
+    if (this.engine) {
+      this.engine.down();
+    }
   }
 
   private initView(canvas: HTMLCanvasElement, shoe: Object3D): void {
@@ -37,7 +50,9 @@ export class ViewerService {
     scene.add(shoe);
 
     const renderer = this.buildRenderer(canvas, width, height);
-    renderer.render(scene, camera);
+
+    this.engine = new Engine(renderer, scene, camera, shoe);
+    this.engine.up();
   }
 
   private loadShoe(onLoad: (data: GLTF) => void): void {
@@ -92,12 +107,6 @@ export class ViewerService {
     renderer.setClearColor(0xffffff, 1);
     renderer.setSize(width, height);
     return renderer;
-  }
-
-  private buildBox(): Mesh {
-    const geometry = new BoxGeometry(0.5, 0.5, 0.5);
-    const material = new MeshNormalMaterial();
-    return new Mesh(geometry, material);
   }
 
   private applyShinyRedMaterial(object: Object3D): void {
