@@ -15,13 +15,13 @@ export class Engine {
 
   up(): void {
     console.log('up');
-    this.shoe1.rotation.z = -22.5 * Math.PI / 180;
+    this.shoe1.rotation.z = 0;
     this.render();
   }
 
   down(): void {
     console.log('down');
-    this.shoe1.rotation.z = 0;
+    this.shoe1.rotation.z = -22.5 * Math.PI / 180;
     this.render();
   }
 
