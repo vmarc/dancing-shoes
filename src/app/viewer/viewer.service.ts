@@ -11,6 +11,8 @@ import { HemisphereLight } from 'three';
 import { DirectionalLight } from 'three';
 import { GLTFLoader } from 'three/addons';
 import { GLTF } from 'three/addons';
+import { PlaneGeometry } from 'three';
+import { ShadowMaterial } from 'three';
 import { Injectable } from '@angular/core';
 import { Engine } from './engine';
 
@@ -26,15 +28,9 @@ export class ViewerService {
     );
   }
 
-  up(): void {
+  toggleShoe(): void {
     if (this.engine) {
-      this.engine.up();
-    }
-  }
-
-  down(): void {
-    if (this.engine) {
-      this.engine.down();
+      this.engine.toggleShoe();
     }
   }
 
@@ -52,7 +48,7 @@ export class ViewerService {
     const renderer = this.buildRenderer(canvas, width, height);
 
     this.engine = new Engine(renderer, scene, camera, shoe);
-    this.engine.up();
+    this.engine.render();
   }
 
   private loadShoe(onLoad: (data: GLTF) => void): void {
@@ -80,25 +76,11 @@ export class ViewerService {
   }
 
   private buildScene(): Scene {
-
     const scene = new Scene();
-    scene.add(new AmbientLight());
-    scene.add(new HemisphereLight());
-
-    const light = new DirectionalLight(0xFFFFFF, 3);
-    light.position.set(0, 10, 0);
-    light.target.position.set(0, 0, 0);
-    scene.add(light);
-    scene.add(light.target);
-
-    const size = 0.1;
-    const divisions = 10;
-    const gridHelper = new GridHelper(size, divisions);
-    scene.add(gridHelper);
-
-    const axesHelper = new AxesHelper(1);
-    scene.add(axesHelper);
-
+    this. initLights(scene);
+    scene.add(this.buildFloor());
+    scene.add(this.buildGrid());
+    scene.add(new AxesHelper(1));
     return scene;
   }
 
@@ -106,6 +88,7 @@ export class ViewerService {
     const renderer = new WebGLRenderer({antialias: true, canvas: canvas});
     renderer.setClearColor(0xffffff, 1);
     renderer.setSize(width, height);
+    renderer.shadowMap.enabled = true;
     return renderer;
   }
 
@@ -118,7 +101,39 @@ export class ViewerService {
     object.traverse((child: Object3D) => {
       if (child instanceof Mesh) {
         child.material = material;
+        child.castShadow = true;
       }
     });
+  }
+
+  private initLights(scene: Scene): void {
+
+    scene.add(new AmbientLight());
+    scene.add(new HemisphereLight());
+
+    const light = new DirectionalLight(0xFFFFFF, 3);
+    light.position.set(0, 10, 0);
+    light.target.position.set(0, 0, 0);
+    light.castShadow = true;
+    light.shadow.mapSize.width = 2048;
+    light.shadow.mapSize.height = 2048;
+    scene.add(light);
+    scene.add(light.target);
+  }
+
+  private buildFloor(): Object3D {
+    const floorGeometry = new PlaneGeometry(0.5, 0.5);
+    const floorMaterial = new ShadowMaterial({opacity: 0.3});
+    const floor = new Mesh(floorGeometry, floorMaterial);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = 0;
+    floor.receiveShadow = true;
+    return floor;
+  }
+
+  private buildGrid(): Object3D {
+    const size = 0.1;
+    const divisions = 10;
+    return new GridHelper(size, divisions);
   }
 }

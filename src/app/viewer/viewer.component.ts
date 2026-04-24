@@ -10,11 +10,8 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
   selector: 'dss-viewer',
   template: `
     <div class="buttons">
-      <button nz-button (click)="up()">
-        up
-      </button>
-      <button nz-button (click)="down()">
-        down
+      <button nz-button (click)="step()">
+        step
       </button>
     </div>
 
@@ -48,11 +45,7 @@ export class ViewerComponent implements AfterViewInit {
     }
   }
 
-  up(): void {
-    this.service.up();
-  }
-
-  down(): void {
-    this.service.down();
+  step(): void {
+    this.service.toggleShoe();
   }
 }

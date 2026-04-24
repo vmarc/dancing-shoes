@@ -8,7 +8,7 @@ import { AudioComponent } from './audio/audio.component';
   imports: [RouterOutlet, ViewerComponent, AudioComponent],
   template: `
     <div class="app-container">
-      <p>Hotel Bizarre Simulator</p>
+      <p>Hotel Bizarre - Dansende Schoentjes</p>
       <dss-viewer/>
       <dss-audio/>
     </div>

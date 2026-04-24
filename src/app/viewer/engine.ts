@@ -1,31 +1,28 @@
-import { PerspectiveCamera } from 'three';
 import { Scene } from 'three';
 import { WebGLRenderer } from 'three';
 import { Object3D } from 'three';
+import { PerspectiveCamera } from 'three';
+
+const SHOE_DOWN_ANGLE = -22.5 * (Math.PI / 180);
 
 export class Engine {
+
+  private down = false;
 
   constructor(
     private renderer: WebGLRenderer,
     private scene: Scene,
     private camera: PerspectiveCamera,
     private shoe1: Object3D
-  ) {
-  }
+  ) {}
 
-  up(): void {
-    console.log('up');
-    this.shoe1.rotation.z = 0;
-    this.render();
-  }
-
-  down(): void {
-    console.log('down');
-    this.shoe1.rotation.z = -22.5 * Math.PI / 180;
+  toggleShoe(): void {
+    this.down = !this.down;
     this.render();
   }
 
   render(): void {
+    this.shoe1.rotation.z = this.down ? SHOE_DOWN_ANGLE : 0;
     this.renderer.render(this.scene, this.camera);
   }
 }
