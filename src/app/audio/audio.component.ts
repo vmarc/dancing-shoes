@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'dss-audio',
   imports: [NzButtonComponent, FormsModule, NzSliderComponent],
   template: `
-    <nz-slider [nzMin]="10" [nzMax]="1000"  (nzOnAfterChange)="zoom($event)" />
+    <nz-slider [nzMin]="10" [nzMax]="1000" [nzDefaultValue]="100" (nzOnAfterChange)="zoom($event)" />
 
     <div class="buttons">
       <button nz-button (click)="playPause()">
@@ -30,7 +30,6 @@ import { FormsModule } from '@angular/forms';
     }
 
   `,
-  providers: [AudioService]
 })
 export class AudioComponent implements AfterViewInit{
   readonly service = inject(AudioService);

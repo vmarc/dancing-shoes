@@ -1,13 +1,25 @@
 import WaveSurfer from 'wavesurfer.js';
+import RegionsPlugin from 'wavesurfer.js/plugins/regions';
+import { ModelService } from '../model/model.service';
+
 
 export class AudioEngine {
 
-  private waveSurfer: WaveSurfer
+  private readonly regions: RegionsPlugin;
+  private readonly waveSurfer: WaveSurfer;
 
-  constructor() {
+  constructor(private modelService: ModelService) {
+    this.regions = RegionsPlugin.create()
     this.waveSurfer = this.buildWaveSurfer();
     this.initLogging();
     this.waveSurfer.load('dance.mp3');
+    this.waveSurfer.on('decode', () => {
+      this.buildMarkers();
+    });
+  }
+
+  now(): number {
+    return this.waveSurfer.getCurrentTime();
   }
 
   playPause(): void {
@@ -24,6 +36,10 @@ export class AudioEngine {
       waveColor: '#0000ff',
       progressColor: '#000055',
       dragToSeek: true,
+      minPxPerSec: 100,
+      plugins: [
+        this.regions
+      ]
     });
   }
 
@@ -111,6 +127,16 @@ export class AudioEngine {
     /** Just before the waveform is destroyed so you can clean up your events */
     this.waveSurfer.on('destroy', () => {
       console.log('Destroy');
+    });
+  }
+
+  private buildMarkers(): void {
+    this.modelService.events.forEach((event) => {
+      this.regions.addRegion({
+        start: event.time,
+        content: event.label,
+        color: 'rgba(255, 0, 0, 0.5)',
+      })
     });
   }
 }

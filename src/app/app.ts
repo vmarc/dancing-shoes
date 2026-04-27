@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ViewerComponent } from './viewer/viewer.component';
 import { AudioComponent } from './audio/audio.component';
+import { ModelService } from './model/model.service';
+import { AudioService } from './audio/audio.service';
 
 @Component({
   selector: 'dss-root',
@@ -22,6 +24,7 @@ import { AudioComponent } from './audio/audio.component';
       margin: 1rem;
     }
   `,
+  providers: [AudioService, ModelService],
 })
 export class App {
 }
