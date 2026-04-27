@@ -72,7 +72,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
         this.service.toggleShoe();
         step++;
         if (step < this.modelService.events.length) {
-          nextStepTime =this.modelService.events[step].time;
+          nextStepTime = this.modelService.events[step].time;
         } else {
           clearInterval(this.animationIntervalId);
         }
