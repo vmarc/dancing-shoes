@@ -1,9 +1,9 @@
 import { ElementRef } from '@angular/core';
 import { Model } from '../model/model';
-import { ModelPath } from './model-path';
-import { ModelCurve } from './model-path';
-import { ModelPoint } from './model-path';
-import { ModelLine } from './model-path';
+import { ModelPath } from '../model/path/model-path';
+import { ModelCurve } from '../model/path/model-curve';
+import { ModelLine } from '../model/path/model-line';
+import { ModelPoint } from '../model/path/model-point';
 
 export class PathBuilder {
 
