@@ -1,42 +1,16 @@
 import { ElementRef } from '@angular/core';
 import { Model } from '../model/model';
-
-export interface Point {
-  x: number;
-  y: number;
-}
-
-export interface PathCurve {
-  start: Point;
-  controlPoint1: Point;
-  controlPoint2: Point;
-  end: Point;
-}
-
-export interface Path {
-  curve1: PathCurve;
-  curve2: PathCurve;
-}
+import { ModelPath } from './model-path';
+import { ModelCurve } from './model-path';
+import { ModelPoint } from './model-path';
+import { ModelLine } from './model-path';
 
 export class PathBuilder {
 
   private readonly width = 1500;
   private readonly height = 1000;
 
-  private readonly path: Path = {
-    curve1: {
-      start: {x: 0, y: 0},
-      controlPoint1: {x: 0, y: 1200},
-      controlPoint2: {x: 700, y: 1150},
-      end: {x: 800, y: 700},
-    },
-    curve2: {
-      start: {x: 800, y: 700},
-      controlPoint1: {x: 900, y: 200},
-      controlPoint2: {x: 1200, y: 200},
-      end: {x: 1500, y: 200},
-    }
-  };
+  private readonly path = new ModelPath();
 
   private context: CanvasRenderingContext2D;
 
@@ -57,32 +31,16 @@ export class PathBuilder {
   draw(): void {
     this.context.clearRect(0, 0, this.width, this.height);
     this.drawGrid();
-    this.drawAxis();
-    this.drawEllipseCurve();
     this.drawPath();
     this.drawPosition();
+    this.drawTest();
   }
 
-  private drawAxis(): void {
-
-    this.context.lineWidth = 10;
-    this.context.strokeStyle = 'pink';
-
-    if (this.model.limitSwitchX1()) {
-      this.drawLine(5, 0, 5, this.height);
-    }
-    if (this.model.limitSwitchX2()) {
-      this.drawLine(this.width - 5, 0, this.width - 5, this.height);
-    }
-    if (this.model.limitSwitchY1()) {
-      this.drawLine(0, 5, this.width, 5);
-    }
-    if (this.model.limitSwitchY2()) {
-      this.drawLine(0, this.height - 5, this.width, this.height - 5);
-    }
+  private drawLine(line: ModelLine): void {
+    this.drawLineCoordinates(line.p1.x, line.p1.y, line.p2.x, line.p2.y);
   }
 
-  private drawLine(x1: number, y1: number, x2: number, y2: number): void {
+  private drawLineCoordinates(x1: number, y1: number, x2: number, y2: number): void {
     this.context.beginPath();
     this.context.moveTo(x1, y1);
     this.context.lineTo(x2, y2);
@@ -129,7 +87,8 @@ export class PathBuilder {
     this.drawCurvePoints(this.path.curve2);
   }
 
-  private drawCurve(curve: PathCurve): void {
+  private drawCurve(modelCurve: ModelCurve): void {
+    const curve = modelCurve.curve;
     this.context.beginPath();
     this.context.moveTo(curve.start.x, curve.start.y);
     this.context.bezierCurveTo(
@@ -143,59 +102,17 @@ export class PathBuilder {
     this.context.stroke();
   }
 
-  private drawCurvePoints(curve: PathCurve): void {
+  private drawCurvePoints(modelCurve: ModelCurve): void {
+    const curve = modelCurve.curve;
     //this.drawPoint(curve.start);
     this.drawPoint(curve.controlPoint1);
     this.drawPoint(curve.controlPoint2);
     this.drawPoint(curve.end);
   }
 
-  private drawPoint(point: Point): void {
+  private drawPoint(point: ModelPoint): void {
     this.context.beginPath();
     this.context.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-    this.context.fill();
-  }
-
-  private drawEllipseCurve(): void {
-    this.context.lineWidth = 4;
-    this.context.strokeStyle = 'orange';
-    this.context.beginPath();
-    this.context.ellipse(750, 0, 750, 1000, 0, Math.PI / 2, Math.PI);
-    this.context.stroke();
-    this.context.beginPath();
-    this.context.ellipse(750, 625, 375, 375, 0, 0, Math.PI / 2);
-    this.context.stroke();
-    this.context.beginPath();
-    this.context.ellipse(1500, 625, 375, 400, 0, -Math.PI, -Math.PI / 2);
-    this.context.stroke();
-  }
-
-  private drawArcCurve(): void {
-
-    this.context.beginPath();
-    this.context.arc(0, 1500, 10, 0, 2 * Math.PI);
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.arc(700, 500, 10, 0, 2 * Math.PI);
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.arc(800, 500, 10, 0, 2 * Math.PI);
-    this.context.fill();
-
-    this.context.fillStyle = 'green';
-
-    this.context.beginPath();
-    this.context.arc(1300, 200, 10, 0, 2 * Math.PI);
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.arc(1500, 0, 10, 0, 2 * Math.PI);
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.arc(1500, 1000, 10, 0, 2 * Math.PI);
     this.context.fill();
   }
 
@@ -220,5 +137,23 @@ export class PathBuilder {
     this.context.beginPath();
     this.context.arc(x, y, 50, 0, 2 * Math.PI);
     this.context.stroke();
+  }
+
+  private drawTest(): void {
+
+    this.context.fillStyle = 'blue';
+    this.context.strokeStyle = 'green';
+
+    this.drawTestShoes(1);
+    for (let d = 50; d < this.path.length; d += 50) {
+      this.drawTestShoes(d);
+    }
+  }
+
+  private drawTestShoes(distance: number): void {
+    const normal = this.path.distanceToNormal(distance);
+    this.drawLine(normal);
+    this.drawPoint(normal.p1);
+    this.drawPoint(normal.p2);
   }
 }
