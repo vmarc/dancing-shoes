@@ -10,11 +10,6 @@ import { ArduinoService } from '../../arduino/arduino.service';
 
 @Component({
   selector: 'dss-home',
-  imports: [
-    AudioComponent,
-    NzButtonComponent,
-    ViewerComponent
-  ],
   template: `
     <div class="page">
       <div>
@@ -33,6 +28,11 @@ import { ArduinoService } from '../../arduino/arduino.service';
       gap: 1rem;
     }
   `,
+  imports: [
+    AudioComponent,
+    NzButtonComponent,
+    ViewerComponent
+  ],
 })
 export class HomeComponent {
   private readonly title = inject(Title);

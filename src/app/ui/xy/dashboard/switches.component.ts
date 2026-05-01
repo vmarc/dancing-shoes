@@ -6,7 +6,6 @@ import { SwitchComponent } from './switch.component';
 
 @Component({
   selector: 'dss-switches',
-  imports: [CardComponent, SwitchComponent],
   template: `
     <dss-card title="Limit switches">
       <div class="row">
@@ -35,6 +34,10 @@ import { SwitchComponent } from './switch.component';
       width: 6em;
     }
   `,
+  imports: [
+    CardComponent,
+    SwitchComponent
+  ],
 })
 export class SwitchesComponent {
   readonly model = input.required<Model>();

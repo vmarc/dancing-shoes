@@ -5,7 +5,6 @@ import { Model } from '../../../model/model';
 
 @Component({
   selector: 'dss-position',
-  imports: [CardComponent],
   template: `
     <dss-card title="Positie">
       <div class="row">
@@ -53,6 +52,9 @@ import { Model } from '../../../model/model';
       padding-left: 0.2em;
     }
   `,
+  imports: [
+    CardComponent,
+  ],
 })
 export class PositionComponent {
   readonly model = input.required<Model>();

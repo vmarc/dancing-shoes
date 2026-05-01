@@ -5,7 +5,6 @@ import { Motor } from '../../../model/motor';
 
 @Component({
   selector: 'dss-motor',
-  imports: [DegreesComponent],
   template: `
     <div class="row">
       <div class="label">{{motor().label}}</div>
@@ -52,6 +51,9 @@ import { Motor } from '../../../model/motor';
       width: 4em;
     }
   `,
+  imports: [
+    DegreesComponent,
+  ],
 })
 export class MotorComponent {
   readonly motor = input.required<Motor>();

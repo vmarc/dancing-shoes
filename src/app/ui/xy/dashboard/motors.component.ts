@@ -6,7 +6,6 @@ import { MotorComponent } from './motor.component';
 
 @Component({
   selector: 'dss-motors',
-  imports: [CardComponent, MotorComponent],
   template: `
     <dss-card title="Motoren">
       <dss-motor [motor]="model().motor1"/>
@@ -14,6 +13,10 @@ import { MotorComponent } from './motor.component';
       <dss-motor [motor]="model().motor3"/>
     </dss-card>
   `,
+  imports: [
+    CardComponent,
+    MotorComponent,
+  ],
 })
 export class MotorsComponent {
   readonly model = input.required<Model>();

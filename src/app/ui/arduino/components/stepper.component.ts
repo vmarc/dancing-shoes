@@ -5,13 +5,17 @@ import { StepperDirectionComponent } from './stepper-direction.component';
 
 @Component({
   selector: 'dss-stepper',
-  imports: [CardComponent, StepperStepsComponent, StepperDirectionComponent],
   template: `
     <dss-card title="Stappen motor">
       <dss-stepper-steps/>
       <dss-stepper-direction/>
     </dss-card>
   `,
+  imports: [
+    CardComponent,
+    StepperDirectionComponent,
+    StepperStepsComponent,
+  ],
 })
 export class StepperComponent {
 }

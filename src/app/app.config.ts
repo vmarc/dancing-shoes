@@ -7,6 +7,9 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { provideHttpClient } from '@angular/common/http';
 import { provideNzNoAnimation } from 'ng-zorro-antd/core/animation';
+import { AudioService } from './ui/home/audio/audio.service';
+import { ModelService } from './model/model.service';
+import { ArduinoService } from './arduino/arduino.service';
 
 registerLocaleData(en);
 
@@ -15,6 +18,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes), provideNzI18n(en_US),
     provideHttpClient(),
+    ArduinoService,
+    AudioService,
+    ModelService,
   ]
 };
- 
+

@@ -9,7 +9,6 @@ import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'dss-xy',
-  imports: [DashboardComponent, PathComponent, XyControlComponent],
   template: `
     <div class="page">
       <dss-xy-control/>
@@ -28,6 +27,11 @@ import { Title } from '@angular/platform-browser';
       width: 20em;
     }
   `,
+  imports: [
+    DashboardComponent,
+    PathComponent,
+    XyControlComponent,
+  ],
 })
 export class XYComponent {
   private readonly title = inject(Title);

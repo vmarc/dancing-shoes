@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'dss-switch-indicator',
-  imports: [FormsModule],
   template: `
     <div class="switch" [class.on]="value()" [class.off]="!value()"></div>
   `,

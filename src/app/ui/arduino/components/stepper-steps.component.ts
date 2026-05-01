@@ -1,17 +1,13 @@
 import { Component } from '@angular/core';
-import { CardComponent } from '../../xy/dashboard/card.component';
+import { signal } from '@angular/core';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
-import { NzInputDirective } from 'ng-zorro-antd/input';
-import { signal } from '@angular/core';
 import { form } from '@angular/forms/signals';
 import { FormField } from '@angular/forms/signals';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
-import { NzFormItemComponent } from 'ng-zorro-antd/form';
 
 @Component({
   selector: 'dss-stepper-steps',
-  imports: [NzButtonComponent, NzInputNumberComponent, FormField, NzIconDirective],
   template: `
     <div class="content">Stappen</div>
     <form class="steps-form">
@@ -37,6 +33,12 @@ import { NzFormItemComponent } from 'ng-zorro-antd/form';
       grid-column: span 2;
     }
   `,
+  imports: [
+    FormField,
+    NzButtonComponent,
+    NzIconDirective,
+    NzInputNumberComponent,
+  ],
 })
 export class StepperStepsComponent {
 

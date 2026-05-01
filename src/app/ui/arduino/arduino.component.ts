@@ -3,18 +3,11 @@ import { MagnetsComponent } from './components/magnets.component';
 import { StepperComponent } from './components/stepper.component';
 import { LedComponent } from './components/led.component';
 import { ConnectionComponent } from './components/connection.component';
-import { ToolbarComponent } from '../components/toolbar.component';
 import { inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'dss-control',
-  imports: [
-    LedComponent,
-    MagnetsComponent,
-    StepperComponent,
-    ConnectionComponent,
-  ],
+  selector: 'dss-arduino',
   template: `
     <div class="control">
       <dss-connection class="small"/>
@@ -34,8 +27,14 @@ import { Title } from '@angular/platform-browser';
       width: 20em;
     }
   `,
+  imports: [
+    ConnectionComponent,
+    LedComponent,
+    MagnetsComponent,
+    StepperComponent,
+  ],
 })
-export class ControlComponent {
+export class ArduinoComponent {
   private readonly title = inject(Title);
   constructor() {
     this.title.setTitle("Arduino");

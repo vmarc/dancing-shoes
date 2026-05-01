@@ -4,7 +4,6 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'dss-degrees',
-  imports: [NzIconDirective],
   template: `
     <div class="degrees">
       <nz-icon class="degrees-icon" [nzRotate]="degrees()" nzType="arrow-up"/>
@@ -23,6 +22,9 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
       color: blue;
     }
   `,
+  imports: [
+    NzIconDirective
+  ],
 })
 export class DegreesComponent {
   readonly degrees = input.required<number>();

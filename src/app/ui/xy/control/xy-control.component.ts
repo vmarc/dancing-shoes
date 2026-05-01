@@ -6,7 +6,6 @@ import { XyControlRotateComponent } from './xy-control-rotate.component';
 // see https://samcooksey.github.io/corexy-playground/
 @Component({
   selector: 'dss-xy-control',
-  imports: [CardComponent, XyControlMoveComponent, XyControlRotateComponent],
   template: `
     <dss-card title="XY instructies">
       <div class="contents">
@@ -34,6 +33,11 @@ import { XyControlRotateComponent } from './xy-control-rotate.component';
       align-self: end;
     }
   `,
+  imports: [
+    CardComponent,
+    XyControlMoveComponent,
+    XyControlRotateComponent,
+  ],
 })
 export class XyControlComponent {
 }

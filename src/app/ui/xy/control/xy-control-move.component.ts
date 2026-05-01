@@ -4,7 +4,6 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'dss-xy-control-move',
-  imports: [NzButtonComponent, NzIconDirective],
   template: `
     <div>
       Verplaatsing
@@ -46,8 +45,10 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
       </button>
     </div>
   `,
-  styles: `
-  `,
+  imports: [
+    NzButtonComponent,
+    NzIconDirective
+  ],
 })
 export class XyControlMoveComponent {
 }

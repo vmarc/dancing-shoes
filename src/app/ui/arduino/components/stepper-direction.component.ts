@@ -4,7 +4,6 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'dss-stepper-direction',
-  imports: [NzButtonComponent, NzIconDirective],
   template: `
     <div>Richting</div>
     <div class="buttons">
@@ -24,6 +23,10 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
       gap: 0.5em;
     }
   `,
+  imports: [
+    NzButtonComponent,
+    NzIconDirective
+  ],
 })
 export class StepperDirectionComponent {
 

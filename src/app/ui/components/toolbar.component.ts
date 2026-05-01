@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { input } from '@angular/core';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { NzDropdownDirective } from 'ng-zorro-antd/dropdown';
@@ -10,16 +9,9 @@ import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'dss-toolbar',
-  imports: [
-    NzDropdownMenuComponent,
-    NzDropdownDirective,
-    NzIconDirective,
-    NzButtonComponent,
-    MenuComponent
-  ],
   template: `
     <div class="toolbar">
-      <button nz-button class="menu" nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
+      <button nz-button nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu">
         <nz-icon nzType="menu"/>
       </button>
       <h1>{{title.getTitle()}}</h1>
@@ -32,13 +24,20 @@ import { Title } from '@angular/platform-browser';
     .toolbar {
       display: flex;
       align-items: center;
-    }
-    .menu {
       margin: 1em;
     }
+    .toolbar h1 {
+      margin-left: 1em;
+    }
   `,
+  imports: [
+    MenuComponent,
+    NzButtonComponent,
+    NzDropdownDirective,
+    NzDropdownMenuComponent,
+    NzIconDirective,
+  ],
 })
 export class ToolbarComponent {
   title = inject(Title);
-  // title = input.required<string>();
 }

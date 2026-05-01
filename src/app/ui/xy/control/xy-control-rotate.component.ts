@@ -5,7 +5,6 @@ import { input } from '@angular/core';
 
 @Component({
   selector: 'dss-xy-control-rotate',
-  imports: [NzButtonComponent, NzIconDirective],
   template: `
     <div>{{ title() }} rotatie</div>
     <button nz-button>
@@ -15,8 +14,10 @@ import { input } from '@angular/core';
       <nz-icon nzType="redo"/>
     </button>
   `,
-  styles: `
-  `,
+  imports: [
+    NzButtonComponent,
+    NzIconDirective
+  ],
 })
 export class XyControlRotateComponent {
   title = input.required<string>();

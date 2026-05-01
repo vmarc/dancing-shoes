@@ -5,17 +5,16 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'dss-led',
-  imports: [NzButtonComponent, CardComponent, NzIconDirective],
   template: `
     <dss-card title="LED">
       <div class="control">
         <button nz-button class="control-button" (click)="on()">
           <nz-icon nzType="plus-circle"/>
-           aan
+          <span>aan</span>
         </button>
         <button nz-button class="control-button" (click)="off()">
           <nz-icon nzType="minus-circle"/>
-           uit
+          <span>uit</span>
         </button>
       </div>
     </dss-card>
@@ -26,6 +25,11 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
       gap: 0.5em;
     }
   `,
+  imports: [
+    CardComponent,
+    NzButtonComponent,
+    NzIconDirective
+  ],
 })
 export class LedComponent {
 

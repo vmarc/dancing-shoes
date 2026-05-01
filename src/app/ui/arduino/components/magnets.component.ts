@@ -5,16 +5,15 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'dss-magnets',
-  imports: [NzButtonComponent, CardComponent, NzIconDirective],
   template: `
     <dss-card title="Schoenen">
       <div class="control">
         <button nz-button class="control-button" (mousedown)="leftOn()" (mouseup)="leftOff()">
           <nz-icon nzType="arrow-right"  nzRotate="135"/>
-           links
+          <span> links</span>
         </button>
         <button nz-button class="control-button" (mousedown)="rightOn()" (mouseup)="rightOff()">
-           rechts
+          <span>rechts</span>
           <nz-icon nzType="arrow-right" nzRotate="45"/>
         </button>
       </div>
@@ -26,6 +25,11 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
       gap: 0.5em;
     }
   `,
+  imports: [
+    CardComponent,
+    NzButtonComponent,
+    NzIconDirective
+  ],
 })
 export class MagnetsComponent {
 

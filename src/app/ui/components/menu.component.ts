@@ -6,12 +6,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'dss-menu',
-  imports: [
-    NzIconDirective,
-    NzMenuDirective,
-    NzMenuItemComponent,
-    RouterLink,
-  ],
   template: `
     <ul nz-menu>
       <li nz-menu-item routerLink="/">
@@ -36,7 +30,13 @@ import { RouterLink } from '@angular/router';
     li nz-icon {
       margin-right: 1em;
     }
-  `
+  `,
+  imports: [
+    NzIconDirective,
+    NzMenuDirective,
+    NzMenuItemComponent,
+    RouterLink,
+  ],
 })
 export class MenuComponent {
 }
