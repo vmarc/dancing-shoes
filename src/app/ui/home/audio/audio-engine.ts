@@ -1,7 +1,7 @@
 import WaveSurfer from 'wavesurfer.js';
 import RegionsPlugin from 'wavesurfer.js/plugins/regions';
-import { ModelService } from '../model/model.service';
-import { TimeLineEvent } from '../model/time-line-event';
+import { ModelService } from '../../../model/model.service';
+import { TimeLineEvent } from '../../../model/time-line-event';
 
 export class AudioEngine {
 

@@ -3,7 +3,7 @@ import { input } from '@angular/core';
 import { MotorsComponent } from './motors.component';
 import { PositionComponent } from './position.component';
 import { SwitchesComponent } from './switches.component';
-import { Model } from '../model/model';
+import { Model } from '../../../model/model';
 
 @Component({
   selector: 'dss-dashboard',

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { input } from '@angular/core';
 import { CardComponent } from './card.component';
-import { Model } from '../model/model';
+import { Model } from '../../../model/model';
 
 @Component({
   selector: 'dss-position',
   imports: [CardComponent],
   template: `
-    <dss-card title="Position">
+    <dss-card title="Positie">
       <div class="row">
         <div class="label">X</div>
         <div class="value">
@@ -23,7 +23,7 @@ import { Model } from '../model/model';
         <div class="unit">cm</div>
       </div>
       <div class="row">
-        <div class="label">Rotation</div>
+        <div class="label">Rotatie</div>
         <div class="value">
           {{model().rotation()}}
         </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AudioEngine } from './audio-engine';
 import { inject } from '@angular/core';
-import { ModelService } from '../model/model.service';
+import { ModelService } from '../../../model/model.service';
 import { signal } from '@angular/core';
 import { effect } from '@angular/core';
 

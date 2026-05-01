@@ -38,7 +38,7 @@ export class Model {
 
   readonly motor1 = new Motor('XY-core 1');
   readonly motor2 = new Motor('XY-core 2');
-  readonly motor3 = new Motor('Rotation');
+  readonly motor3 = new Motor('Rotatie');
 
   readonly timeLine: TimeLine;
 

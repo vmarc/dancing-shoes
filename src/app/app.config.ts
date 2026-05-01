@@ -6,6 +6,7 @@ import { en_US, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { provideHttpClient } from '@angular/common/http';
+import { provideNzNoAnimation } from 'ng-zorro-antd/core/animation';
 
 registerLocaleData(en);
 
@@ -16,3 +17,4 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
   ]
 };
+ 

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { input } from '@angular/core';
 import { viewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
-import { Model } from '../model/model';
+import { Model } from '../../../model/model';
 import { PathBuilder } from './path-builder';
 
 @Component({

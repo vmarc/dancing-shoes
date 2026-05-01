@@ -23,7 +23,7 @@ import { input } from '@angular/core';
     }
 
     .card-content {
-      padding: 0.5em 0.5em 0.5em 1.5em;
+      padding: 0.5em 0.5em 0.5em 0.5em;
     }
   `,
 })

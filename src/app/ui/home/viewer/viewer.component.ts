@@ -5,7 +5,7 @@ import { ElementRef } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import { ViewerService } from './viewer.service';
 import { effect } from '@angular/core';
-import { ModelService } from '../model/model.service';
+import { ModelService } from '../../../model/model.service';
 
 @Component({
   selector: 'dss-viewer',

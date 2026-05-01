@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { input } from '@angular/core';
-import { DegreesComponent } from '../common/degrees.component';
-import { Motor } from '../model/motor';
+import { DegreesComponent } from '../../components/degrees.component';
+import { Motor } from '../../../model/motor';
 
 @Component({
   selector: 'dss-motor',
@@ -14,7 +14,7 @@ import { Motor } from '../model/motor';
         {{motor().degrees()}}°
       </div>
       <div class="steps">
-        150/200 steps
+        150/200 stappen
       </div>
       <div class="progress">
         75%
@@ -43,7 +43,7 @@ import { Motor } from '../model/motor';
     .steps {
       display: flex;
       justify-content: end;
-      width: 8em;
+      width: 10em;
     }
 
     .progress {

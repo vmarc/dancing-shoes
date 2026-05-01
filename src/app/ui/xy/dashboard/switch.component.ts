@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SwitchIndicatorComponent } from '../common/switch-indicator.component';
+import { SwitchIndicatorComponent } from '../../components/switch-indicator.component';
 
 @Component({
   selector: 'dss-switch',

@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
     #waveform {
       display: block;
       border: 1px solid black;
-      min-width: 100%;
+      margin-right: 2em;
     }
   `,
 })

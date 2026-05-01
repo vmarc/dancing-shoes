@@ -19,7 +19,6 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
       border: 1px solid black;
       background-color: powderblue;
     }
-
     .degrees-icon {
       color: blue;
     }
