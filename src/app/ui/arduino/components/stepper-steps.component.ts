@@ -5,6 +5,7 @@ import { NzInputNumberComponent } from 'ng-zorro-antd/input-number';
 import { form } from '@angular/forms/signals';
 import { FormField } from '@angular/forms/signals';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NoFocusDirective } from '../../components/nofocus.directive';
 
 @Component({
   selector: 'dss-stepper-steps',
@@ -35,6 +36,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
   `,
   imports: [
     FormField,
+    NoFocusDirective,
     NzButtonComponent,
     NzIconDirective,
     NzInputNumberComponent,

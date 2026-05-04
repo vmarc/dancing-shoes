@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { CardComponent } from '../../xy/dashboard/card.component';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { inject } from '@angular/core';
+import { ArduinoService } from '../../../arduino/arduino.service';
+import { NoFocusDirective } from '../../components/nofocus.directive';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'dss-led',
@@ -27,17 +30,19 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
   `,
   imports: [
     CardComponent,
+    NoFocusDirective,
     NzButtonComponent,
-    NzIconDirective
+    NzIconDirective,
   ],
 })
 export class LedComponent {
+  private readonly service = inject(ArduinoService);
 
   on(): void {
-    console.log("CONTROL LED ON");
+    this.service.ledOn();
   }
 
   off(): void {
-    console.log("CONTROL LED OFF");
+    this.service.ledOff();
   }
 }

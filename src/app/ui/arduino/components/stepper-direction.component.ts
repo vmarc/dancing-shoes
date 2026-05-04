@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { inject } from '@angular/core';
+import { ArduinoService } from '../../../arduino/arduino.service';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NoFocusDirective } from '../../components/nofocus.directive';
 
 @Component({
   selector: 'dss-stepper-direction',
@@ -24,17 +27,19 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     }
   `,
   imports: [
+    NoFocusDirective,
     NzButtonComponent,
-    NzIconDirective
+    NzIconDirective,
   ],
 })
 export class StepperDirectionComponent {
+  private readonly service = inject(ArduinoService);
 
   backward(): void {
-    console.log("CONTROL STEPPER BACKWARD");
+    this.service.stepperForward();
   }
 
   forward(): void {
-    console.log("CONTROL STEPPER FORWARD");
+    this.service.stepperBackward();
   }
 }

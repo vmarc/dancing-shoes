@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { CardComponent } from '../../xy/dashboard/card.component';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { inject } from '@angular/core';
+import { ArduinoService } from '../../../arduino/arduino.service';
+import { NoFocusDirective } from '../../components/nofocus.directive';
 
 @Component({
   selector: 'dss-magnets',
@@ -27,25 +30,27 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
   `,
   imports: [
     CardComponent,
+    NoFocusDirective,
     NzButtonComponent,
-    NzIconDirective
+    NzIconDirective,
   ],
 })
 export class MagnetsComponent {
+  private readonly service = inject(ArduinoService);
 
   leftOn(): void {
-    console.log("CONTROL LEFT ON");
+    this.service.leftShoeOn();
   }
 
   leftOff(): void {
-    console.log("CONTROL LEFT OFF");
+    this.service.leftShoeOff();
   }
 
   rightOn(): void {
-    console.log("CONTROL RIGHT ON");
+    this.service.rightShoeOn();
   }
 
   rightOff(): void {
-    console.log("CONTROL RIGHT OFF");
+    this.service.rightShoeOff();
   }
 }

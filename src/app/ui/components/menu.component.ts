@@ -28,7 +28,7 @@ import { RouterLink } from '@angular/router';
   `,
   styles: `
     li nz-icon {
-      margin-right: 1em;
+      margin-right: 0.5em;
     }
   `,
   imports: [

@@ -7,12 +7,20 @@ import { input } from '@angular/core';
   selector: 'dss-xy-control-rotate',
   template: `
     <div>{{ title() }} rotatie</div>
-    <button nz-button>
-      <nz-icon nzType="undo"/>
-    </button>
-    <button nz-button>
-      <nz-icon nzType="redo"/>
-    </button>
+    <div class="buttons">
+      <button nz-button>
+        <nz-icon nzType="undo"/>
+      </button>
+      <button nz-button>
+        <nz-icon nzType="redo"/>
+      </button>
+    </div>
+  `,
+  styles: `
+    .buttons {
+      display: grid;
+      grid-template-columns: auto auto;
+    }
   `,
   imports: [
     NzButtonComponent,
