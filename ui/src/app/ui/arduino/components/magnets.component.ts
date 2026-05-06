@@ -11,11 +11,11 @@ import { NoFocusDirective } from '../../components/nofocus.directive';
   template: `
     <dss-card title="Schoenen">
       <div class="control">
-        <button nz-button class="control-button" (mousedown)="leftOn()" (mouseup)="leftOff()">
-          <nz-icon nzType="arrow-right"  nzRotate="135"/>
+        <button nz-button class="control-button" (mousedown)="leftDown()" (mouseup)="leftUp()">
+          <nz-icon nzType="arrow-right" nzRotate="135"/>
           <span> links</span>
         </button>
-        <button nz-button class="control-button" (mousedown)="rightOn()" (mouseup)="rightOff()">
+        <button nz-button class="control-button" (mousedown)="rightDown()" (mouseup)="rightUp()">
           <span>rechts</span>
           <nz-icon nzType="arrow-right" nzRotate="45"/>
         </button>
@@ -38,19 +38,19 @@ import { NoFocusDirective } from '../../components/nofocus.directive';
 export class MagnetsComponent {
   private readonly service = inject(ArduinoService);
 
-  leftOn(): void {
-    this.service.leftShoeOn();
+  leftDown(): void {
+    this.service.leftShoeDown();
   }
 
-  leftOff(): void {
-    this.service.leftShoeOff();
+  leftUp(): void {
+    this.service.leftShoeUp();
   }
 
-  rightOn(): void {
-    this.service.rightShoeOn();
+  rightDown(): void {
+    this.service.rightShoeDown();
   }
 
-  rightOff(): void {
-    this.service.rightShoeOff();
+  rightUp(): void {
+    this.service.rightShoeUp();
   }
 }

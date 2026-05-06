@@ -24,27 +24,33 @@ export class ArduinoService {
     this.sendCommand('led-off');
   }
 
-  leftShoeOn(): void {
+  leftShoeDown(): void {
+    this.sendCommand('left-shoe-down');
   }
 
-  leftShoeOff(): void {
+  leftShoeUp(): void {
+    this.sendCommand('left-shoe-up');
   }
 
-  rightShoeOn(): void {
+  rightShoeDown(): void {
+    this.sendCommand('right-shoe-down');
   }
 
-  rightShoeOff(): void {
+  rightShoeUp(): void {
+    this.sendCommand('right-shoe-up');
   }
 
   stepperForward(): void {
+    this.sendCommand('stepper-forward');
   }
 
   stepperBackward(): void {
+    this.sendCommand('stepper-backward');
   }
 
   private async sendCommand(command: string): Promise<void> {
     if (this.serial) {
-      this.serial.sendData(command + "\n");
+      this.serial.send(command + "\n");
     } else {
       console.error(`No connection to Arduino "${command}"`);
     }

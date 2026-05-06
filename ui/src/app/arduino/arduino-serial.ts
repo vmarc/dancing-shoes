@@ -26,42 +26,62 @@ export class ArduinoSerial {
       console.error("This browser does NOT support the Web Serial API");
       return;
     }
-    let nav: Navigator = navigator;
-    nav.serial.getPorts().then(() => {
-      try {
-        nav.serial.requestPort().then(port => {
-          this.serialPort = port;
-          try {
-            this.serialPort.open(this.serialOptions).then(() => {
-              this.readLoop();
-            });
-          } catch (error) {
-            console.error("Opening port error: " + error);
-            return;
-          }
-        });
-      } catch (error) {
-        console.error("Requesting port error: " + error);
-        return;
-      }
-    });
+    this.requestPortAndOpen();
   }
 
-  sendData(data: string): void {
+  send(message: string): void {
 
-    console.log("sending data: ", data /*, this.writer*/);
+    console.log("send: ", message /*, this.writer*/);
 
     // await this.writer.write(data);
 
     const encoder = new TextEncoder();
     if (this.serialPort) {
       const writer = this.serialPort.writable.getWriter();
-      writer.write(encoder.encode(data)).then(() => {
-        console.log("sending data ok: ", data);
-      }).catch((err: any) => {
-        console.error("Error sending data: ", err);
-      });
+      writer.write(encoder.encode(message))
+        .then(() => {
+          console.log("sending data ok: ", message);
+        })
+        .catch((err: any) => {
+          console.error("Error sending data: ", err);
+        });
       writer.releaseLock();
+    }
+  }
+
+  private requestPortAndOpen(): void {
+    let nav: Navigator = navigator;
+    nav.serial.requestPort()
+      .then(port => {
+        this.serialPort = port;
+        this.initializePort()
+        this.openPortAndReadLoop();
+      })
+      .catch(error => {
+        console.error("Could not request port: " + error);
+      });
+  }
+
+  private openPortAndReadLoop(): void {
+    if (this.serialPort) {
+      this.serialPort.open(this.serialOptions)
+        .then(() => {
+          this.readLoop();
+        })
+        .catch(error => {
+          console.error("Opening port error: " + error);
+        });
+    }
+  }
+
+  private initializePort(): void {
+    if (this.serialPort) {
+      this.serialPort.onconnect = () => {
+        console.log("Serial port connected");
+      };
+      this.serialPort.ondisconnect = () => {
+        console.error("Serial port disconnected");
+      };
     }
   }
 
@@ -76,7 +96,7 @@ export class ArduinoSerial {
         try {
           let ready = false;
           while (!ready && this.serialPort.readable && this.keepReading) {
-            const { value, done } = await this.reader.read();
+            const {value, done} = await this.reader.read();
             if (done) {
               console.log("reader has been canceled");
               ready = true;
@@ -114,7 +134,7 @@ export class ArduinoSerial {
   }
 }
 
-class LineBreakTransformer implements Transformer<string, string>{
+class LineBreakTransformer implements Transformer<string, string> {
   private chunks = "";
 
   transform(chunk: string, controller: TransformStreamDefaultController<string>) {
