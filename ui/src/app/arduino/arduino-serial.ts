@@ -1,150 +1,131 @@
 export class ArduinoSerial {
 
-  private serialOptions: SerialOptions = {
+  private readonly serialOptions: SerialOptions = {
     baudRate: 9600,
     dataBits: 8,
     parity: 'none',
     bufferSize: 256,
     flowControl: 'none'
   };
+
   private serialPort: SerialPort | undefined;
   private reader: ReadableStreamDefaultReader<string> | undefined;
+  private readableStreamClosed: Promise<void> | undefined;
+  private keepReading = true;
 
-  private writer: any;
-  private readFunction: Function;
-  private readableStreamClosed: any;
-  private writableStreamClosed: any;
-  private keepReading: boolean = true;
-
-  constructor(readFunction: (message: string) => void) {
-    this.readFunction = readFunction;
+  constructor(private readonly onMessage: (message: string) => void) {
   }
 
   init(): void {
+    if (this.serialPort) {
+      this.error('serial port already open');
+      return;
+    }
     this.keepReading = true;
-    if (!("serial" in navigator)) {
-      console.error("This browser does NOT support the Web Serial API");
+    if (!('serial' in navigator)) {
+      this.error('browser does NOT support the Web Serial API');
       return;
     }
     this.requestPortAndOpen();
   }
 
-  send(message: string): void {
-
-    console.log("send: ", message /*, this.writer*/);
-
-    // await this.writer.write(data);
-
-    const encoder = new TextEncoder();
-    if (this.serialPort) {
-      const writer = this.serialPort.writable.getWriter();
-      writer.write(encoder.encode(message))
-        .then(() => {
-          console.log("sending data ok: ", message);
-        })
-        .catch((err: any) => {
-          console.error("Error sending data: ", err);
-        });
+  async send(message: string): Promise<void> {
+    if (!this.serialPort?.writable) {
+      this.error('port is not writable');
+      return;
+    }
+    const writer = this.serialPort.writable.getWriter();
+    try {
+      await writer.write(new TextEncoder().encode(message));
+    } catch (error) {
+      this.error(`could not send message: ${message}`, error);
+    } finally {
       writer.releaseLock();
     }
   }
 
-  private requestPortAndOpen(): void {
-    let nav: Navigator = navigator;
-    nav.serial.requestPort()
-      .then(port => {
-        this.serialPort = port;
-        this.initializePort()
-        this.openPortAndReadLoop();
-      })
-      .catch(error => {
-        console.error("Could not request port: " + error);
-      });
-  }
-
-  private openPortAndReadLoop(): void {
-    if (this.serialPort) {
-      this.serialPort.open(this.serialOptions)
-        .then(() => {
-          this.readLoop();
-        })
-        .catch(error => {
-          console.error("Opening port error: " + error);
-        });
+  async close(): Promise<void> {
+    this.keepReading = false;
+    try {
+      await this.reader?.cancel();
+      await this.readableStreamClosed;
+      await this.serialPort?.close()
+      this.log('port closed');
+    } catch(error) {
+        this.error('could not close port', error);
     }
   }
 
-  private initializePort(): void {
-    if (this.serialPort) {
-      this.serialPort.onconnect = () => {
-        console.log("Serial port connected");
-      };
+  private async requestPortAndOpen(): Promise<void> {
+    try {
+      this.serialPort = await navigator.serial.requestPort();
+      this.serialPort.onconnect = () => this.log('serial port connected');
       this.serialPort.ondisconnect = () => {
-        console.error("Serial port disconnected");
-      };
+        this.keepReading = false;
+        this.serialPort = undefined;
+        this.reader = undefined;
+        this.readableStreamClosed = undefined;
+        this.error('serial port disconnected');
+      }
+      await this.serialPort.open(this.serialOptions);
+      await this.readLoop();
+    } catch (error) {
+      this.error('could not open port', error);
     }
   }
 
   private async readLoop(): Promise<void> {
-    if (this.serialPort) {
-      const textDecoder = new TextDecoderStream();
-      this.readableStreamClosed = this.serialPort.readable.pipeTo(textDecoder.writable);
+    if (!this.serialPort) return;
+
+    const textDecoder = new TextDecoderStream();
+    this.readableStreamClosed = this.serialPort.readable.pipeTo(textDecoder.writable);
+    if (textDecoder.readable) {
       this.reader = textDecoder.readable
         .pipeThrough(new TransformStream(new LineBreakTransformer()))
         .getReader();
-      while (this.serialPort.readable) {
-        try {
-          let ready = false;
-          while (!ready && this.serialPort.readable && this.keepReading) {
-            const {value, done} = await this.reader.read();
-            if (done) {
-              console.log("reader has been canceled");
-              ready = true;
-            } else if (value) {
-              console.log("value");
-              this.readFunction(value);
-            }
-          }
-        } catch (error) {
-          // Handle |error|...
-        } finally {
-          this.reader.releaseLock();
+
+      try {
+        while (this.keepReading) {
+          const {value, done} = await this.reader.read();
+          if (done) break;
+          if (value) this.onMessage(value);
         }
+      } catch (error) {
+        this.error('Read error:', error);
+      } finally {
+        this.reader.releaseLock();
       }
     }
   }
 
-  close(): void {
-    this.keepReading = false;
-    if (this.reader) {
-      this.reader.cancel();
+  private log(message: string): void {
+    console.log(`Arduino: ${message}`);
+  }
+
+  private error(message: string, error?: unknown): void {
+    if (error) {
+      console.error(`Arduino: ${message}`, error);
     }
-    this.readableStreamClosed.then(() => {
-      // this.writer.close();
-      this.writableStreamClosed.then(() => {
-        if (this.serialPort) {
-          this.serialPort.close().then(() => {
-              console.log("Port closed");
-            }
-          );
-        }
-      });
-    }).catch(() => {
-    });
+    else {
+      console.error(`Arduino: ${message}`);
+    }
   }
 }
 
 class LineBreakTransformer implements Transformer<string, string> {
-  private chunks = "";
+  private chunks = '';
 
-  transform(chunk: string, controller: TransformStreamDefaultController<string>) {
+  transform(chunk: string, controller: TransformStreamDefaultController<string>): void {
     this.chunks += chunk;
-    const lines = this.chunks.split("\n");
-    this.chunks = lines.pop()!;
-    lines.forEach((line) => controller.enqueue(line));
+    const lines = this.chunks.split('\n');
+    const line = lines.pop();
+    if (line === undefined) return;
+    this.chunks = line;
+    lines.forEach(line => controller.enqueue(line));
   }
 
-  flush(controller: TransformStreamDefaultController<string>) {
+  flush(controller: TransformStreamDefaultController<string>): void {
+    if (this.chunks === '') return;
     controller.enqueue(this.chunks);
   }
 }

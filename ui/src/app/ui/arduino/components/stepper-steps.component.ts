@@ -6,6 +6,8 @@ import { form } from '@angular/forms/signals';
 import { FormField } from '@angular/forms/signals';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { NoFocusDirective } from '../../components/nofocus.directive';
+import { ArduinoService } from '../../../arduino/arduino.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'dss-stepper-steps',
@@ -43,6 +45,7 @@ import { NoFocusDirective } from '../../components/nofocus.directive';
   ],
 })
 export class StepperStepsComponent {
+  private readonly arduinoService = inject(ArduinoService);
 
   commandModel = signal<StepperCommand>({
     stepCount: 100,
@@ -51,6 +54,6 @@ export class StepperStepsComponent {
   commandForm = form(this.commandModel);
 
   send(): void {
-    console.log(`CONTROL send stepper command, stepCount=${this.commandModel().stepCount}, interval=${this.commandModel().interval}`);
+    this.arduinoService.stepper();
   }
 }

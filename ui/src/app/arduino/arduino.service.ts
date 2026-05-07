@@ -40,6 +40,10 @@ export class ArduinoService {
     this.sendCommand('right-shoe-up');
   }
 
+  stepper(): void {
+    this.sendCommand('stepper');
+  }
+
   stepperForward(): void {
     this.sendCommand('stepper-forward');
   }

@@ -56,6 +56,7 @@ void setup() {
 
   setupPins();
   setupSteppers();
+  Serial.println("ready");
 }
 
 void loop() {
