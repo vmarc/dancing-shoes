@@ -49,10 +49,10 @@ export class ArduinoSerial {
     try {
       await this.reader?.cancel();
       await this.readableStreamClosed;
-      await this.serialPort?.close()
+      await this.serialPort?.close();
       this.log('port closed');
-    } catch(error) {
-        this.error('could not close port', error);
+    } catch (error) {
+      this.error('could not close port', error);
     }
   }
 
@@ -79,22 +79,20 @@ export class ArduinoSerial {
 
     const textDecoder = new TextDecoderStream();
     this.readableStreamClosed = this.serialPort.readable.pipeTo(textDecoder.writable);
-    if (textDecoder.readable) {
-      this.reader = textDecoder.readable
-        .pipeThrough(new TransformStream(new LineBreakTransformer()))
-        .getReader();
+    this.reader = textDecoder.readable
+      .pipeThrough(new TransformStream(new LineBreakTransformer()))
+      .getReader();
 
-      try {
-        while (this.keepReading) {
-          const {value, done} = await this.reader.read();
-          if (done) break;
-          if (value) this.onMessage(value);
-        }
-      } catch (error) {
-        this.error('Read error:', error);
-      } finally {
-        this.reader.releaseLock();
+    try {
+      while (this.keepReading) {
+        const {value, done} = await this.reader.read();
+        if (done) break;
+        if (value) this.onMessage(value);
       }
+    } catch (error) {
+      this.error('Read error:', error);
+    } finally {
+      this.reader.releaseLock();
     }
   }
 
@@ -103,12 +101,7 @@ export class ArduinoSerial {
   }
 
   private error(message: string, error?: unknown): void {
-    if (error) {
-      console.error(`Arduino: ${message}`, error);
-    }
-    else {
-      console.error(`Arduino: ${message}`);
-    }
+    console.error(`Arduino: ${message}`, ...error ? [error] : []);
   }
 }
 
