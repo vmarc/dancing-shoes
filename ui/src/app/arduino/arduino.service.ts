@@ -1,12 +1,39 @@
 import { Injectable } from '@angular/core';
 import { ArduinoSerial } from './arduino-serial';
+import { inject } from '@angular/core';
+import { ModelService } from '../model/model.service';
+import { effect } from '@angular/core';
 
 @Injectable()
 export class ArduinoService {
+  private modelService = inject(ModelService);
 
   private serial: ArduinoSerial = new ArduinoSerial((message: string) => {
     console.log(`[Arduino] "${message}"`);
   });
+
+  constructor() {
+    effect(() => {
+      const down = this.modelService.model.shoeLeftDown();
+      if (this.serial.isReady()) {
+        if (down) {
+          this.leftShoeDown();
+        } else {
+          this.leftShoeUp();
+        }
+      }
+    });
+    effect(() => {
+      const down = this.modelService.model.shoeRightDown();
+      if (this.serial.isReady()) {
+        if (down) {
+          this.rightShoeDown();
+        } else {
+          this.rightShoeUp();
+        }
+      }
+    });
+  }
 
   init(): void {
     this.serial.init();
@@ -52,7 +79,7 @@ export class ArduinoService {
     this.sendCommand('stepper-backward');
   }
 
-  private async sendCommand(command: string): Promise<void> {
+  private sendCommand(command: string): void {
     if (this.serial) {
       this.serial.send(command + "\n");
     } else {

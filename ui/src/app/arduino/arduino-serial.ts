@@ -1,124 +1,121 @@
+import { LineBreakTransformer } from './line-break-transformer';
+import { ArduinoSerialConnection } from './arduino-serial-connection';
+
 export class ArduinoSerial {
 
   private readonly serialOptions: SerialOptions = {
-    baudRate: 9600,
+    baudRate: 600,
     dataBits: 8,
     parity: 'none',
     bufferSize: 256,
     flowControl: 'none'
   };
 
-  private serialPort: SerialPort | undefined;
-  private reader: ReadableStreamDefaultReader<string> | undefined;
-  private readableStreamClosed: Promise<void> | undefined;
-  private keepReading = true;
+  private readonly serialPortRequestOptions: SerialPortRequestOptions = {
+    filters: [{usbVendorId: 0x1a86, usbProductId: 0x7523},],
+  };
+  private connection: ArduinoSerialConnection | undefined;
 
   constructor(private readonly onMessage: (message: string) => void) {
   }
 
+  isReady(): boolean {
+    return !!this.connection;
+  }
+
   init(): void {
-    if (this.serialPort) {
-      this.error('serial port already open');
+    if (this.connection) {
+      this.logError('serial port already open');
       return;
     }
-    this.keepReading = true;
     if (!('serial' in navigator)) {
-      this.error('browser does NOT support the Web Serial API');
+      this.logError('browser does NOT support the Web Serial API');
       return;
     }
     this.requestPortAndOpen();
   }
 
-  async send(message: string): Promise<void> {
-    if (!this.serialPort?.writable) {
-      this.error('port is not writable');
-      return;
-    }
-    const writer = this.serialPort.writable.getWriter();
-    try {
-      await writer.write(new TextEncoder().encode(message));
-    } catch (error) {
-      this.error(`could not send message: ${message}`, error);
-    } finally {
-      writer.releaseLock();
+  send(message: string): void {
+    if (!this.connection) {
+      this.logError(`could not send message: "${message}" (port not open)`);
+    } else {
+      this.connection.send(message);
     }
   }
 
-  async close(): Promise<void> {
-    this.keepReading = false;
-    try {
-      await this.reader?.cancel();
-      await this.readableStreamClosed;
-      await this.serialPort?.close();
-      this.log('port closed');
-    } catch (error) {
-      this.error('could not close port', error);
+  close(): void {
+    if (this.connection) {
+      this.connection.close();
+      this.connection = undefined;
     }
   }
 
-  private async requestPortAndOpen(): Promise<void> {
-    try {
-      this.serialPort = await navigator.serial.requestPort();
-      this.serialPort.onconnect = () => this.log('serial port connected');
-      this.serialPort.ondisconnect = () => {
-        this.keepReading = false;
-        this.serialPort = undefined;
-        this.reader = undefined;
-        this.readableStreamClosed = undefined;
-        this.error('serial port disconnected');
-      }
-      await this.serialPort.open(this.serialOptions);
-      await this.readLoop();
-    } catch (error) {
-      this.error('could not open port', error);
+  private requestPortAndOpen(): void {
+    navigator.serial.requestPort(this.serialPortRequestOptions)
+      .then(port => {
+        port.onconnect = this.onConnect;
+        port.ondisconnect = this.onDisconnect;
+        this.open(port);
+      })
+      .catch(error => {
+        if (error.name === 'NotFoundError') {
+          this.log('No port selected')
+        } else {
+          this.logError('Could not request serial port', error)
+        }
+      });
+    this.log('requestPortAndOpen() end');
+  }
+
+  private open(port: SerialPort): void {
+    this.log('about to open serial port:');
+    port.open(this.serialOptions)
+      .then(() => {
+        this.log('serial port opened');
+        this.initReader(port);
+      })
+      .catch(error => {
+        console.error(error);
+          this.logError('Could not open serial port', error);
+          this.connection = undefined;
+        }
+      );
+    this.log('open() end');
+  }
+
+  private onConnect(): void {
+    this.log('serial port connected');
+  }
+
+  private onDisconnect(): void {
+    this.logError('serial port disconnected');
+    if (this.connection) {
+      this.close();
     }
   }
 
-  private async readLoop(): Promise<void> {
-    if (!this.serialPort) return;
-
+  private initReader(port: SerialPort): void {
     const textDecoder = new TextDecoderStream();
-    this.readableStreamClosed = this.serialPort.readable.pipeTo(textDecoder.writable);
-    this.reader = textDecoder.readable
+    port.readable.pipeTo(textDecoder.writable)
+      .then(() => {
+        this.log('serial port readable stream piped to TextDecoderStream');
+      })
+      .catch(error => {
+        this.logError('Could not pipe serial port readable stream to TextDecoderStream', error);
+      });
+    const reader = textDecoder.readable
       .pipeThrough(new TransformStream(new LineBreakTransformer()))
       .getReader();
 
-    try {
-      while (this.keepReading) {
-        const {value, done} = await this.reader.read();
-        if (done) break;
-        if (value) this.onMessage(value);
-      }
-    } catch (error) {
-      this.error('Read error:', error);
-    } finally {
-      this.reader.releaseLock();
-    }
+    this.connection = new ArduinoSerialConnection(port, reader, this.onMessage);
+    this.log('initReader() end');
   }
 
   private log(message: string): void {
     console.log(`Arduino: ${message}`);
   }
 
-  private error(message: string, error?: unknown): void {
+  private logError(message: string, error?: unknown): void {
     console.error(`Arduino: ${message}`, ...error ? [error] : []);
-  }
-}
-
-class LineBreakTransformer implements Transformer<string, string> {
-  private chunks = '';
-
-  transform(chunk: string, controller: TransformStreamDefaultController<string>): void {
-    this.chunks += chunk;
-    const lines = this.chunks.split('\n');
-    const line = lines.pop();
-    if (line === undefined) return;
-    this.chunks = line;
-    lines.forEach(line => controller.enqueue(line));
-  }
-
-  flush(controller: TransformStreamDefaultController<string>): void {
-    if (this.chunks === '') return;
-    controller.enqueue(this.chunks);
   }
 }

@@ -8,3 +8,8 @@ h1 {
   margin: 0;
   padding: 0;
 }
+
+.ant-btn:active {
+  background-color: lightskyblue;
+  color: white;
+}

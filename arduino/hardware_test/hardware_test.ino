@@ -51,7 +51,7 @@ constexpr size_t ACTION_COUNT = sizeof(actions) / sizeof(Action);
 *******************/
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(600);
   while (!Serial) {}
 
   setupPins();
@@ -59,9 +59,22 @@ void setup() {
   Serial.println("ready");
 }
 
+bool magnetDown = false;
+
 void loop() {
   serialTick();
   steppers.do_tasks(micros());
+
+  if (digitalRead(PIN_BUTTON_1) == LOW) {
+    if (magnetDown == false) {
+      actionLedOn();
+    }
+  }
+  if (digitalRead(PIN_BUTTON_2) == LOW) {
+    if (magnetDown == true) {
+      actionLedOff();
+    }
+  }
 }
 
 /******************
@@ -96,12 +109,14 @@ void setupSteppers() {
 *******************/
 
 void actionLedOn() {
+  magnetDown = true;
   digitalWrite(LED_BUILTIN,    HIGH);
   digitalWrite(PIN_SHOE_RIGHT, LOW);
   Serial.println("led-on");
 }
 
 void actionLedOff() {
+  magnetDown = false;
   digitalWrite(LED_BUILTIN,    LOW);
   digitalWrite(PIN_SHOE_RIGHT, HIGH);
   Serial.println("led-off");
