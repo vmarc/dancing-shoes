@@ -4,7 +4,7 @@ import { ArduinoSerialConnection } from './arduino-serial-connection';
 export class ArduinoSerial {
 
   private readonly serialOptions: SerialOptions = {
-    baudRate: 600,
+    baudRate: 9600,
     dataBits: 8,
     parity: 'none',
     bufferSize: 256,
@@ -68,7 +68,6 @@ export class ArduinoSerial {
   }
 
   private open(port: SerialPort): void {
-    this.log('about to open serial port:');
     port.open(this.serialOptions)
       .then(() => {
         this.log('serial port opened');
@@ -80,7 +79,6 @@ export class ArduinoSerial {
           this.connection = undefined;
         }
       );
-    this.log('open() end');
   }
 
   private onConnect(): void {
@@ -96,19 +94,12 @@ export class ArduinoSerial {
 
   private initReader(port: SerialPort): void {
     const textDecoder = new TextDecoderStream();
-    port.readable.pipeTo(textDecoder.writable)
-      .then(() => {
-        this.log('serial port readable stream piped to TextDecoderStream');
-      })
-      .catch(error => {
-        this.logError('Could not pipe serial port readable stream to TextDecoderStream', error);
-      });
+    const writableStreamClosed = port.readable.pipeTo(textDecoder.writable);
     const reader = textDecoder.readable
       .pipeThrough(new TransformStream(new LineBreakTransformer()))
       .getReader();
 
-    this.connection = new ArduinoSerialConnection(port, reader, this.onMessage);
-    this.log('initReader() end');
+    this.connection = new ArduinoSerialConnection(port, reader, writableStreamClosed, this.onMessage);
   }
 
   private log(message: string): void {

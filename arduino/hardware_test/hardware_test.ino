@@ -51,7 +51,7 @@ constexpr size_t ACTION_COUNT = sizeof(actions) / sizeof(Action);
 *******************/
 
 void setup() {
-  Serial.begin(600);
+  Serial.begin(9600);
   while (!Serial) {}
 
   setupPins();

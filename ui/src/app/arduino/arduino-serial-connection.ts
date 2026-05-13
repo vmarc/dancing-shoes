@@ -5,6 +5,7 @@ export class ArduinoSerialConnection {
   constructor(
     private readonly port: SerialPort,
     private readonly reader: ReadableStreamDefaultReader<string>,
+    private readonly writableStreamClosed: Promise<void>,
     private readonly onMessage: (message: string) => void
   ) {
     this.readLoop();
@@ -28,9 +29,9 @@ export class ArduinoSerialConnection {
   private cancelReaderAndClosePort(): void {
     this.reader.cancel()
       .then(() => {
-        this.error('reader cancelled');
-        //this.readableStreamClosed;
-        this.closePort();
+        this.writableStreamClosed
+          .then(() => this.closePort())
+          .catch(error => this.closePort());
       })
       .catch(error => {
         this.error('could not cancel reader', error);
@@ -49,14 +50,10 @@ export class ArduinoSerialConnection {
 
   private async readLoop(): Promise<void> {
     try {
-      this.log('loop start');
       while (this.keepReading) {
-        this.log('in loop');
         const {value, done} = await this.reader.read();
-        console.log('read: ', value, ' done: ', done);
         if (done) break;
         if (value) {
-          console.log('read VALUE: ', value);
           this.onMessage(value);
         }
       }
