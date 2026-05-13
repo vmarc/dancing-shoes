@@ -69,6 +69,6 @@ export class ArduinoSerialConnection {
   }
 
   private error(message: string, error?: unknown): void {
-    console.error(`Arduino: ${message}`, ...error ? [error] : []);
+    console.error(`Arduino: ${message}`, ...(error ? [error] : []));
   }
 }
